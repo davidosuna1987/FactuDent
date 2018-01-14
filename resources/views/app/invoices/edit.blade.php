@@ -11,12 +11,45 @@
 		<div class="columns">
 			<div class="column">
 	  		<a href="{{route('invoices.index')}}" class="button is-pulled-right">Volver</a>
-				<div class="title">Editar factura {{$invoice->invoice_no}}</div>
+				<div class="title">
+					Editar factura {{$invoice->invoice_no}}
+					{{-- @if($invoice->payment_date) --}}
+						<form class="form form-set-invoice-as-unpaid is-inline" method="POST" action="{{route('invoices.unpay', $invoice->id)}}" role="form">
+							{{csrf_field()}}
+	            {{method_field('PUT')}}
+							{{-- <button type="submit" class="button is-small is-success tooltip m-t-5 m-l-10" data-tooltip="Haz click para marcar esta factura pendiente">Pagada {{\Carbon::parse(gmdate("Y-m-d\TH:i:s", strtotime($invoice->payment_date)))->diffForHumans()}}</button> --}}
+						</form>
+					{{-- @else --}}
+						<form class="form form-set-invoice-as-paid is-inline" method="POST" action="{{route('invoices.pay', $invoice->id)}}" role="form">
+							{{csrf_field()}}
+	            {{method_field('PUT')}}
+							{{-- <button type="submit" class="button is-small is-danger tooltip m-t-5 m-l-10" data-tooltip="Haz click para marcar esta factura como pagada">Pendiente</button> --}}
+						</form>
+					{{-- @endif --}}
+				</div>
 				<hr>
 			</div>
 		</div>
 
 		<div class="invoice-info">
+
+			<div class="columns">
+				<div class="column">
+					<div class="invoice-state is-pulled-right m-r-50">
+						<h5>
+							Estado de la factura
+							<span class="invoice-state-switcher m-l-15 {{$invoice->payment_date ? 'paid' : 'unpaid'}}">
+								<span class="invoice-switcher-wrapper">
+									<span class="invoice-state-paid">Pagada</span>
+									<span class="invoice-state-limit"></span>
+									<span class="invoice-state-unpaid">Pendiente</span>
+								</span>
+							</span>
+						</h5>
+					</div>
+				</div>
+			</div>
+
 			<h3 class="has-text-primary">
 				Datos fiscales
 			</h3>
@@ -26,29 +59,17 @@
 						<tbody>
 							<tr>
 								<th>Nº factura</th>
-								<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{sprintf('%06d', $invoice->invoice_no)}}</td>
+								<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{$invoice->invoice_no}}</td>
 							</tr>
 							<tr>
 								<th>Fecha</th>
-								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon\Carbon::parse('today')->format('Y-m-d')}}"></td>
+								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon::parse($invoice->invoice_date)->format('Y-m-d')}}"></td>
 							</tr>
 							<tr>
 								<th>Nombre</th>
-								<td>{{Auth::user()->fullName()}}</td>
+								<td>{{auth()->user()->fullName()}}</td>
 							</tr>
-							{{-- TODO: cambiar datos fijos por user_settings --}}
-							<tr>
-								<th>Domicilio</th>
-								<td>C/ Bélgica 14, puerta 5</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td>46021 Valencia (Valencia)</td>
-							</tr>
-							<tr>
-								<th>CIF / NIF</th>
-								<td>44646557-S</td>
-							</tr>
+							@include('app.invoices.partials.userdata-rows')
 						</tbody>
 					</table>
 				</div>
@@ -76,9 +97,9 @@
 														data-post_code="{{$invoice->clinic()->post_code}}"
 														data-phone="{{$invoice->clinic()->phone}}"
 														data-fax="{{$invoice->clinic()->fax}}">
-														{{$invoice->clinic()->contact}}
+														{{$invoice->clinic()->name}}
 													</option>
-									      @foreach(auth()->user()->clinics() as $clinic)
+									      @foreach(auth()->user()->clinics()->get() as $clinic)
 									      	@if($invoice->clinic_id != $clinic->id)
 														<option value="{{$clinic->id}}"
 															data-id="{{$clinic->id}}"
@@ -92,7 +113,7 @@
 															data-post_code="{{$clinic->post_code}}"
 															data-phone="{{$clinic->phone}}"
 															data-fax="{{$clinic->fax}}">
-															{{$clinic->contact}}
+															{{$clinic->name}}
 														</option>
 													@endif
 									      @endforeach

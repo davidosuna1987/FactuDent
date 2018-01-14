@@ -13,6 +13,9 @@
     @stack('styles')
 </head>
 <body>
+    @include('partials.loader')
+    @include('partials.messages')
+
     <div id="app" class="app">
         @include('partials.navbar.main')
         @include('partials.navbar.app')

@@ -15,7 +15,7 @@ class RolesTableSeeder extends Seeder
 
         //Crear roles
         DB::table('roles')->insert([
-            'name' => 'God',
+            'name' => 'The fu**ing god!',
             'slug' => 'god'
         ]);
         DB::table('roles')->insert([
@@ -23,7 +23,7 @@ class RolesTableSeeder extends Seeder
             'slug' => 'admin'
         ]);
         DB::table('roles')->insert([
-            'name' => 'Usuario',
+            'name' => 'Usuario básico',
             'slug' => 'user'
         ]);
     }

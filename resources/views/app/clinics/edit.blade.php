@@ -15,6 +15,10 @@
 	<div class="columns">
 		<div class="column">
 
+			@if($errors->any())
+				<p class="label has-text-danger is-small">Recuerda que todos los campos marcados con * son obligatorios.</p>
+			@endif
+
 			<div class="field">
 				<label for="autocomplete" class="label is-small">Busca la dirección en Google</label>
 				<p class="control has-icons-left">
@@ -32,7 +36,7 @@
 					<div class="columns">
 				    <div class="column is-three-fifths p-b-0">
 				    	<div class="field{{ $errors->has('address') ? ' has-error' : '' }}">
-				    	    <label for="address" class="label is-small">Dirección</label>
+				    	    <label for="address" class="label is-small">Dirección <span class="has-text-primary">*</span></label>
 
 				    	    <p class="control has-icons-left">
 				    	        <input id="address" type="text" class="input is-small{{ $errors->has('address') ? ' is-danger' : ' is-primary' }}" name="address" value="{{$clinic->address or old('address')}}">
@@ -47,7 +51,7 @@
 
 				    <div class="column is-two-fifths p-b-0">
 				    	<div class="field{{ $errors->has('locality') ? ' has-error' : '' }}">
-				    	    <label for="locality" class="label is-small">Localidad</label>
+				    	    <label for="locality" class="label is-small">Localidad <span class="has-text-primary">*</span></label>
 
 				    	    <p class="control has-icons-left">
 				    	        <input id="locality" type="text" class="input is-small{{ $errors->has('locality') ? ' is-danger' : ' is-primary' }}" name="locality" value="{{$clinic->locality or old('locality')}}">
@@ -64,7 +68,7 @@
 			    <div class="columns">
 			    	<div class="column is-one-third">
 			    		<div class="field{{ $errors->has('province') ? ' has-error' : '' }}">
-			    		    <label for="province" class="label is-small">Provinica</label>
+			    		    <label for="province" class="label is-small">Provinica <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="province" type="text" class="input is-small{{ $errors->has('province') ? ' is-danger' : ' is-primary' }}" name="province" value="{{$clinic->province or old('province')}}">
@@ -79,7 +83,7 @@
 
 			    	<div class="column is-one-third">
 			    		<div class="field{{ $errors->has('country') ? ' has-error' : '' }}">
-			    		    <label for="country" class="label is-small">País</label>
+			    		    <label for="country" class="label is-small">País <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="country" type="text" class="input is-small{{ $errors->has('country') ? ' is-danger' : ' is-primary' }}" name="country" value="{{$clinic->country or old('country')}}">
@@ -94,10 +98,10 @@
 
 			    	<div class="column is-one-third">
 			    		<div class="field{{ $errors->has('post_code') ? ' has-error' : '' }}">
-			    		    <label for="post_code" class="label is-small">Código postal</label>
+			    		    <label for="post_code" class="label is-small">Código postal <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
-			    		        <input id="post_code" type="number" class="input is-small{{ $errors->has('post_code') ? ' is-danger' : ' is-primary' }}" name="post_code" value="{{$clinic->post_code or old('post_code')}}">
+			    		        <input id="post_code" type="text" class="input is-small{{ $errors->has('post_code') ? ' is-danger' : ' is-primary' }}" name="post_code" value="{{$clinic->post_code or old('post_code')}}">
 			    		        <span class="icon is-small is-left"><i class="mdi mdi-map-marker-radius"></i></span>
 
 			    		        @if($errors->has('post_code'))
@@ -113,7 +117,7 @@
 			    <div class="columns">
 			    	<div class="column is-one-third p-b-0">
 			    		<div class="field{{ $errors->has('name') ? ' has-error' : '' }}">
-			    		    <label for="name" class="label is-small">Nombre de la clínica</label>
+			    		    <label for="name" class="label is-small">Nombre de la clínica <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="name" type="text" class="input is-small{{ $errors->has('name') ? ' is-danger' : ' is-primary' }}" name="name" value="{{$clinic->name or old('name')}}">
@@ -128,7 +132,7 @@
 
 			    	<div class="column is-one-third p-b-0">
 			    		<div class="field{{ $errors->has('contact') ? ' has-error' : '' }}">
-			    		    <label for="contact" class="label is-small">Persona de contacto</label>
+			    		    <label for="contact" class="label is-small">Persona de contacto <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="contact" type="text" class="input is-small{{ $errors->has('contact') ? ' is-danger' : ' is-primary' }}" name="contact" value="{{$clinic->contact or old('contact')}}">
@@ -143,7 +147,7 @@
 
 			    	<div class="column is-one-third p-b-0">
 			    		<div class="field{{ $errors->has('email') ? ' has-error' : '' }}">
-			    		    <label for="email" class="label is-small">E-mail</label>
+			    		    <label for="email" class="label is-small">E-mail <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="email" type="email" class="input is-small{{ $errors->has('email') ? ' is-danger' : ' is-primary' }}" name="email" value="{{$clinic->email or old('email')}}">
@@ -160,7 +164,7 @@
 			    <div class="columns">
 			    	<div class="column p-b-0">
 			    		<div class="field{{ $errors->has('nif') ? ' has-error' : '' }}">
-			    		    <label for="nif" class="label is-small">NIF</label>
+			    		    <label for="nif" class="label is-small">NIF <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="nif" type="text" class="input is-small{{ $errors->has('nif') ? ' is-danger' : ' is-primary' }}" name="nif" value="{{$clinic->nif or old('nif')}}">
@@ -205,7 +209,7 @@
 
 			    	<div class="column p-b-0 w-150">
 			    		<div class="field{{ $errors->has('percentage') ? ' has-error' : '' }}">
-			    		    <label for="percentage" class="label is-small">Mi porcentaje</label>
+			    		    <label for="percentage" class="label is-small">Mi porcentaje <span class="has-text-primary">*</span></label>
 
 			    		    <p class="control has-icons-left">
 			    		        <input id="percentage" type="number" class="input is-small{{ $errors->has('percentage') ? ' is-danger' : ' is-primary' }}" name="percentage" min="1" max="100" value="{{$clinic->percentage or old('percentage')}}" >
@@ -230,92 +234,5 @@
 @endsection
 
 @push('scripts')
-
-	<script>
-	  // This example displays an address form, using the autocomplete feature
-	  // of the Google Places API to help users fill in the information.
-
-	  // This example requires the Places library. Include the libraries=places
-	  // parameter when you first load the API. For example:
-	  // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
-
-	  var placeSearch, autocomplete;
-	  var componentForm = {
-	    street_number: false,
-	    route: false,
-	    locality: false,
-	    administrative_area_level_1: false,
-	    administrative_area_level_2: false,
-	    country: false,
-	    postal_code: false
-	  };
-
-	  function initAutocomplete() {
-	    // Create the autocomplete object, restricting the search to geographical
-	    // location types.
-	    autocomplete = new google.maps.places.Autocomplete(
-	        /** @type {!HTMLInputElement} */(document.getElementById('autocomplete')),
-	        {types: ['geocode']});
-
-	    // When the user selects an address from the dropdown, populate the address
-	    // fields in the form.
-	    autocomplete.addListener('place_changed', fillInAddress);
-	  }
-
-	  function fillInAddress() {
-	    // Get the place details from the autocomplete object.
-	    var place = autocomplete.getPlace();
-	    console.info(place.address_components);
-
-	    for(var component in componentForm) componentForm[component] = false;
-
-	    // Get each component of the address from the place details
-	    // and fill the corresponding field on the form.
-	    for (var i = 0; i < place.address_components.length; i++) {
-	      var addressType = place.address_components[i].types[0];
-	      if (componentForm[addressType] !== null) {
-	        var val = place.address_components[i]['long_name'];
-	        componentForm[addressType] = val;
-	      }
-	    }
-
-	    var calle = componentForm['route'],
-	    		numero = componentForm['street_number'],
-	    		localidad = componentForm['locality'],
-	    		provincia = componentForm['administrative_area_level_2'],
-	    		ccaa = componentForm['administrative_area_level_1'],
-	    		pais = componentForm['country'],
-	    		cp = componentForm['postal_code'];
-	   	var direccion = calle;
-	   	if(numero) direccion += ', ' + numero;
-
-	   	document.getElementById('autocomplete').value = '';
-	   	document.getElementById('address').value = direccion;
-	   	document.getElementById('locality').value = localidad;
-	   	document.getElementById('province').value = provincia;
-	   	document.getElementById('country').value = pais;
-	   	document.getElementById('post_code').value = cp;
-	  }
-
-	  // Bias the autocomplete object to the user's geographical location,
-	  // as supplied by the browser's 'navigator.geolocation' object.
-	  function geolocate() {
-	    if (navigator.geolocation) {
-	      navigator.geolocation.getCurrentPosition(function(position) {
-	        var geolocation = {
-	          lat: position.coords.latitude,
-	          lng: position.coords.longitude
-	        };
-	        var circle = new google.maps.Circle({
-	          center: geolocation,
-	          radius: position.coords.accuracy
-	        });
-	        autocomplete.setBounds(circle.getBounds());
-	      });
-	    }
-	  }
-	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsUrHpDmE-xK7rHWLxBU6Am7weZkkxZ90&libraries=places&callback=initAutocomplete"
-	    async defer></script>
-
+	@include('partials.scripts.autocomplete')
 @endpush

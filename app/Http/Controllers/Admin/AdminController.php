@@ -6,7 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AdminUserController extends Controller
+class AdminController extends Controller
 {
     // Display a landing page for active clients.
     public function index()

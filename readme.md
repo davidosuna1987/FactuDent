@@ -49,3 +49,12 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+
+## TODO FUNCIONALIDAD
+
+- Mail activación nuevo usuario.
+
+## TODO MEJORAS
+- Unificar form edit y form create de las clínicas
+- Cambiar switcher edit invoice por switcher settings y que no se envíe por ajax.
+- Cambiar porcentaje retención

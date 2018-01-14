@@ -1,15 +1,16 @@
 			@if(isset($invoice))
 				<form class="create-invoice-form form" method="POST" action="{{route('invoices.update', $invoice->invoice_no)}}" role="form">
 				{{method_field('PUT')}}
-		    <input type="hidden" class="invoice-no" name="invoice_no" value="{{sprintf('%06d', $invoice->invoice_no)}}">
+		    <input type="hidden" class="invoice-no" name="invoice_no" value="{{$invoice->invoice_no}}">
 	    	<input type="hidden" class="invoice-clinic-id" name="clinic_id" value="{{$invoice->clinic_id}}">
+		    <input type="hidden" class="invoice-date" name="invoice_date" value="{{\Carbon::parse($invoice->invoice_date)->format('Y-m-d')}}">
 			@else
 				<form class="create-invoice-form form" method="POST" action="{{route('invoices.store')}}" role="form">
-		    <input type="hidden" class="invoice-no" name="invoice_no" value="{{sprintf('%06d', $lastInvoiceID+1)}}">
+		    <input type="hidden" class="invoice-no" name="invoice_no" value="{{$lastInvoiceID+1}}">
 	    	<input type="hidden" class="invoice-clinic-id" name="clinic_id" value="0">
+		    <input type="hidden" class="invoice-date" name="invoice_date" value="{{\Carbon::parse('first day of this month')->format('Y-m-d')}}">
 			@endif
 			    {{csrf_field()}}
-			    <input type="hidden" class="invoice-date" name="invoice_date" value="{{\Carbon\Carbon::parse('today')->format('Y-m-d')}}">
 
 					<table class="invoice-details-table table is-bordered is-narrow has-text-small">
 						<thead>
@@ -45,7 +46,7 @@
 							@else
 								<tr class="invoice-line" data-id="1">
 									<td class="has-input-field">
-										<input class="invoice-description input is-primary" name="invoiceline[1][description]" required="required" value="Trabajos realizados el mes de {{\Carbon\Carbon::parse('first day of this month')->startOfMonth()->format('F')}}" />
+										<input class="invoice-description input is-primary" name="invoiceline[1][description]" required="required" value="Trabajos realizados el mes de {{\Carbon::parse('first day of this month')->startOfMonth()->format('F')}}" />
 									</td>
 									<td class="has-input-field w-100">
 										<input class="invoice-quantity input is-primary" type="number" name="invoiceline[1][quantity]" min="1" value="1" required="required">
@@ -64,7 +65,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<td class="is-empty" colspan="2"><span class="add-invoice-line has-text-primary" title="Añadir línea">Añadir línea</span></td>
+								<td class="is-empty" colspan="2"><span class="add-invoice-line has-text-primary tooltip" data-tooltip="Añadir nueva línea a la factura">Añadir línea</span></td>
 								<th>Subtotal</th>
 								@if(isset($invoice))
 									<td class="invoice-subtotal has-text-right">{{$invoice->sub_total}}€</td>
@@ -72,23 +73,47 @@
 									<td class="invoice-subtotal has-text-right">1€</td>
 								@endif
 							</tr>
+							<tr class="invoice-dentist-percentage-row">
+								<td class="is-empty" colspan="2"></td>
+								@if(isset($invoice))
+									<th class="invoice-dentist-percentage-label">
+										<span>Porcentaje odontólogo</span>
+										<div class="field">
+											<input type="number" name="dentist_percentage" class="invoice-dentist-percentage is-primary" value="{{$invoice->dentist_percentage}}">
+									    <span class="icon is-small"><i class="mdi mdi-percent"></i></span>
+										</div>
+									</th>
+									<td class="invoice-dentist-percentage-total has-text-right">
+										<span>{{str_replace(',00', '', number_format(ceil($invoice->sub_total * $invoice->dentist_percentage) / 100, 2, ',', '.'))}}€</span>
+									</td>
+								@else
+									<th class="invoice-dentist-percentage-label">
+										<span>Porcentaje odontólogo</span>
+										<div class="field">
+											<input type="number" name="dentist_percentage" class="invoice-dentist-percentage is-primary" value="{{auth()->user()->default_percentage ? auth()->user()->default_percentage : 50}}">
+									    <span class="icon is-small"><i class="mdi mdi-percent"></i></span>
+										</div>
+									</th>
+									<td class="invoice-dentist-percentage-total has-text-right"><span>0,50€</span></td>
+								@endif
+							</tr>
 							<tr>
 								<td class="is-empty" colspan="2"></td>
 								@if(isset($invoice))
 									<th>Retención <span class="invoice-retention">{{$invoice->retention}}</span>%</th>
-									<td class="invoice-retention-total has-text-right">{{$invoice->sub_total - $invoice->total}}€</td>
+									<td class="invoice-retention-total has-text-right">{{str_replace(',00', '', number_format(floor($invoice->sub_total * $invoice->dentist_percentage) / 100 - $invoice->total, 2, ',', '.'))}}€</td>
 								@else
 									<th>Retención <span class="invoice-retention">15</span>%</th>
-									<td class="invoice-retention-total has-text-right">0,15€</td>
+									<td class="invoice-retention-total has-text-right">0,07€</td>
 								@endif
 							</tr>
 							<tr>
 								<td class="is-empty" colspan="2"></td>
 								<th>Total</th>
 								@if(isset($invoice))
-									<td class="invoice-total has-text-right">{{$invoice->total}}€</td>
+									<td class="invoice-total has-text-right">{{str_replace(',00', '', number_format($invoice->total, 2, ',', '.'))}}€</td>
 								@else
-									<td class="invoice-total has-text-right">0,85€</td>
+									<td class="invoice-total has-text-right">0,43€</td>
 								@endif
 							</tr>
 						</tfoot>

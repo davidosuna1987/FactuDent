@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 jQuery(document).ready(function($) {
 
-
   function showSnackbar(){
     setTimeout(function(){
       $('.snackbar').addClass('opened');
@@ -65,9 +64,26 @@ jQuery(document).ready(function($) {
     });
   }
 
+  function createSnackbar(message){
+    var div = document.createElement('div');
+        div.className = 'snackbar';
+        div.innerText = message;
+    var a = document.createElement('a');
+        a.href = '#';
+        a.innerText = 'OK';
+
+    div.appendChild(a);
+    $('body').append(div);
+    showSnackbar();
+  }
+
   showSnackbar();
 
 
+
+  $('.show-pdf-button').click(function(e) {
+    $('.loader-wrapper').addClass('opened');
+  });
 
   $('.form-delete-clinic .button').click(function(e){
     e.preventDefault();
@@ -93,6 +109,29 @@ jQuery(document).ready(function($) {
         $(this).closest('form').submit();
       }
     });
+  });
+
+  $('.invoice-state-switcher').click(function(e) {
+    var that = $(this);
+    var invoice_state_change_to = that.hasClass('paid') ? 'unpaid' : 'paid';
+    var _form = $('.form-set-invoice-as-'+invoice_state_change_to);
+    var _url = _form.attr('action');
+    var _token = _form.find('input[name="_token"]').val();
+    var _method = _form.find('input[name="_method"]').val();
+
+    $.ajax({
+      url: _url,
+      method: _method,
+      data: _form.serialize()
+    })
+    .done(function(response) {
+      that.toggleClass('paid unpaid');
+      // createSnackbar(response.message);
+    })
+    .fail(function() {
+      console.log("error");
+    });
+
   });
 
   $('.invoice-clinic-id-fake').change(function(e) {
@@ -146,11 +185,15 @@ jQuery(document).ready(function($) {
     createNewInvoiceLine();
   });
 
-  $('.invoice-quantity, .invoice-unit-price').on('keyup change', function(){
-    if($(this).val() == '') $(this).val(1);
+  $('.invoice-quantity, .invoice-unit-price').on('keyup change', function(e){
+    // if($(this).val() == '') $(this).val(1);
     var $_invoice_line = $(this).closest('tr');
     calculateLineTotal($_invoice_line);
-  })
+  });
+
+  $('.invoice-dentist-percentage').on('keyup change', function(e) {
+    calculateInvoiceTotal();
+  });
 
   function createNewInvoiceLine(statusClass = 'is-primary'){
     var lastDataId = $('.invoice-details-table tbody tr').last().data('id') || 0;
@@ -239,6 +282,8 @@ jQuery(document).ready(function($) {
 
   function calculateInvoiceTotal(){
     var _invoice_subtotal = 0;
+    var _invoice_dentist_percent = parseFloat($('.invoice-dentist-percentage').val());
+    var _invoice_dentist_sub_total = 0;
     var _invoice_retention = parseFloat($('.invoice-retention').text());
     var _invoice_retention_total = 0;
     var _invoice_total = 0;
@@ -250,23 +295,28 @@ jQuery(document).ready(function($) {
       _invoice_subtotal += _invoice_line_total;
     });
 
-    _invoice_retention_total = _invoice_subtotal * _invoice_retention / 100;
-    _invoice_total = _invoice_subtotal - _invoice_retention_total;
+    _invoice_dentist_sub_total = _invoice_subtotal * _invoice_dentist_percent / 100;
+    _invoice_retention_total = _invoice_dentist_sub_total * _invoice_retention / 100;
+    _invoice_total = _invoice_dentist_sub_total - _invoice_retention_total;
 
-    _invoice_subtotal = numberFormat(_invoice_subtotal,2,',','.');
+    _invoice_subtotal = numberFormat(_invoice_subtotal,2,',','.', true);
     _invoice_subtotal = _invoice_subtotal.replace(',00', '')+'€';
     $('.create-invoice-form').find('.invoice-subtotal').html(_invoice_subtotal);
 
-    _invoice_retention_total = numberFormat(_invoice_retention_total,2,',','.');
+    _invoice_dentist_sub_total = numberFormat(_invoice_dentist_sub_total,2,',','.', true);
+    _invoice_dentist_sub_total = _invoice_dentist_sub_total.replace(',00', '')+'€';
+    $('.create-invoice-form').find('.invoice-dentist-percentage-total span').html(_invoice_dentist_sub_total);
+
+    _invoice_retention_total = numberFormat(_invoice_retention_total,2,',','.', false);
     _invoice_retention_total = _invoice_retention_total.replace(',00', '')+'€';
     $('.create-invoice-form').find('.invoice-retention-total').html(_invoice_retention_total);
 
-    _invoice_total = numberFormat(_invoice_total,2,',','.');
+    _invoice_total = numberFormat(_invoice_total,2,',','.', true);
     _invoice_total = _invoice_total.replace(',00', '')+'€';
     $('.create-invoice-form').find('.invoice-total').html(_invoice_total);
   }
 
-  function numberFormat(number, decimals, dec_point, thousands_sep) {
+  function numberFormat(number, decimals, dec_point, thousands_sep, up = false) {
       var n = !isFinite(+number) ? 0 : +number,
           prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
           sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
@@ -274,6 +324,11 @@ jQuery(document).ready(function($) {
           toFixedFix = function (n, prec) {
               // Fix for IE parseFloat(0.55).toFixed(0) = 0;
               var k = Math.pow(10, prec);
+              if(up){
+                return Math.ceil(n * k) / k;
+              }else{
+                return Math.floor(n * k) / k;
+              }
               return Math.round(n * k) / k;
           },
           s = (prec ? toFixedFix(n, prec) : Math.round(n)).toString().split('.');

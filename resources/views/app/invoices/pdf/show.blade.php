@@ -1,7 +1,7 @@
 @extends('layouts.pdf')
 
 @section('title')
-	PDF | Factura {{$invoice->invoice_no}}
+	| Factura {{$invoice->invoice_no}} PDF
 @endsection
 
 @section('content')
@@ -20,7 +20,7 @@
 			<div class="columns">
 				<table class="table has-no-borders">
 					<tr>
-						<td colspan="2"><h3 class="has-text-primary">Datos fiscales</h3></td>
+						<td colspan="2"><h3 style="color:{{auth()->user()->pdf_color}}">Datos fiscales</h3></td>
 					</tr>
 					<tr>
 						<td width="50%">
@@ -28,29 +28,17 @@
 								<tbody>
 									<tr>
 										<th>Nº factura</th>
-										<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{sprintf('%06d', $invoice->invoice_no)}}</td>
+										<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{$invoice->invoice_no}}</td>
 									</tr>
 									<tr>
 										<th>Fecha</th>
-										<td class="invoice-date-fake has-no-borders">{{\Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y')}}</td>
+										<td class="invoice-date-fake has-no-borders">{{\Carbon::parse($invoice->invoice_date)->format('d-m-Y')}}</td>
 									</tr>
 									<tr>
 										<th>Nombre</th>
-										<td>{{Auth::user()->name}}</td>
+										<td>{{auth()->user()->name}}</td>
 									</tr>
-									{{-- TODO: cambiar datos fijos por user_settings --}}
-									<tr>
-										<th>Domicilio</th>
-										<td>C/ Bélgica 14, puerta 5</td>
-									</tr>
-									<tr>
-										<th></th>
-										<td>46021 Valencia (Valencia)</td>
-									</tr>
-									<tr>
-										<th>CIF / NIF</th>
-										<td>44646557-S</td>
-									</tr>
+									@include('app.invoices.partials.userdata-rows')
 								</tbody>
 							</table>
 						</td>
@@ -60,7 +48,7 @@
 								<tbody>
 									<tr>
 										<th>Cliente</th>
-										<td>{{$invoice->clinic()->contact}}</td>
+										<td>{{$invoice->clinic()->name}}</td>
 									</tr>
 									<tr>
 										<th>Email</th>
@@ -80,7 +68,7 @@
 									</tr>
 									<tr>
 										<th>Teléfono / Fax</th>
-										<td>{{$invoice->clinic()->phone}} / {{($invoice->clinic()->fax) ? $invoice->clinic()->fax : ''}}</td>
+										<td>{{$invoice->clinic()->phone}} {{($invoice->clinic()->fax) ? ' / '.$invoice->clinic()->fax : ''}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -91,7 +79,7 @@
 
 			<div class="columns p-t-30">
 				<div class="column">
-					<h3 class="has-text-primary">Detalles de la factura</h3>
+					<h3 style="color:{{auth()->user()->pdf_color}}">Detalles de la factura</h3>
 					@include('app.invoices.pdf._table')
 				</div>
 			</div>

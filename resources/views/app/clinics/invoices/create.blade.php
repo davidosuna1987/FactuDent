@@ -31,25 +31,9 @@
 							</tr>
 							<tr>
 								<th>Fecha</th>
-								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon\Carbon::parse('today')->format('Y-m-d')}}"></td>
+								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon::parse('first day of this month')->format('Y-m-d')}}"></td>
 							</tr>
-							<tr>
-								<th>Nombre</th>
-								<td>{{Auth::user()->name}}</td>
-							</tr>
-							{{-- TODO: cambiar datos fijos por user_settings --}}
-							<tr>
-								<th>Domicilio</th>
-								<td>C/ Bélgica 14, puerta 5</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td>46021 Valencia (Valencia)</td>
-							</tr>
-							<tr>
-								<th>CIF / NIF</th>
-								<td>44646557-S</td>
-							</tr>
+							@include('app.invoices.partials.userdata-rows')
 						</tbody>
 					</table>
 				</div>
@@ -59,7 +43,7 @@
 						<tbody>
 							<tr>
 								<th>Cliente</th>
-								<td>{{$clinic->contact}}</td>
+								<td>{{$clinic->name}}</td>
 							</tr>
 							<tr>
 								<th>Email</th>

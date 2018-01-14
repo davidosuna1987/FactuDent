@@ -21,6 +21,7 @@ class CreateInvoicesTable extends Migration
             $table->date('invoice_date')->nullable();
             $table->date('payment_date')->nullable();
             $table->integer('retention')->default(15);
+            $table->integer('dentist_percentage')->default(50);
             $table->decimal('sub_total', 10, 2);
             $table->decimal('total', 10, 2);
 

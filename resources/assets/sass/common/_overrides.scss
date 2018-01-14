@@ -6,6 +6,24 @@
 	border-radius: 0 !important;
 }
 
+input,
+select,
+textarea{
+	outline: none;
+}
+
+.tag{
+	cursor: default;
+}
+
+.column{
+	&.badge[data-badge]::after {
+	    top: 3px;
+	    right: 3px;
+			left: auto;
+	}
+}
+
 /*=========================================
 ============= Text overrides ==============
 =========================================*/
@@ -253,4 +271,85 @@ a{
   border: solid 1px #dbdbdb;
   background-color: #fff;
   color: #000;
+}
+
+/*=========================================
+======= Bulma Extenssions overrides =======
+=========================================*/
+
+.tooltip{
+	&:after{
+		background: rgba(74, 74, 74, 0.9) !important;
+	}
+}
+
+
+.badge[data-badge]::after {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/*=========================================
+============ Colpick overrides ============
+=========================================*/
+
+.colpick_hex{
+	overflow: visible !important;
+  // top: 301px !important;
+	// left: 504px !important;
+	height: 207px !important;
+	background: white !important;
+  border: solid 1px #dbdbdb !important;
+}
+
+.colpick_new_color,
+.colpick_hex_field{
+	display: none !important;
+}
+
+.colpick_selector_outer{
+	border: 1px solid #dbdbdb !important;
+  border-radius: 999px !important;
+  overflow: hidden;
+}
+
+.colpick_selector_inner{
+  border: 1px solid white !important;
+  background: white !important;
+}
+
+.colpick_color{
+	outline: 1px solid #dbdbdb !important;
+}
+
+.colpick_hue{
+	border: 1px solid #dbdbdb !important;
+  cursor: row-resize !important;
+}
+
+.colpick_hue_larr{
+	border-left-color: $turquoise !important;
+}
+
+.colpick_hue_rarr{
+	border-right-color: $turquoise !important;
+}
+
+.colpick_default{
+  position: absolute;
+  bottom: 7px;
+  left: 6px;
+  font-size: 0.75rem;
+  padding: 0 10px;
+}
+
+.colpick_submit{
+	display: block !important;
+  top: auto !important;
+  bottom: 7px !important;
+  left: auto !important;
+  right: 10px !important;
+  padding: 1px 5px 1px 3px;
+  font-weight: 400 !important;
 }

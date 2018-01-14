@@ -18,14 +18,14 @@
       </div>
 
       <div class="navbar-end">
-        @if(Auth::guest())
+        @guest
             <a href="{{ route('login') }}" class="navbar-item is-tab">Login</a>
             <a href="{{ route('register') }}" class="navbar-item is-tab">Registro</a>
         @else
             <div class="navbar-item has-dropdown is-hoverable">
-              <span class="navbar-link">¡Hola {{Auth::user()->name}}!</span>
+              <span class="navbar-link">¡Hola {{auth()->user()->name}}!</span>
               <div class="navbar-dropdown is-right">
-                <a class="navbar-item" href="#">
+                <a class="navbar-item" href="{{route('profile')}}">
                   <span class="icon is-primary is-small m-r-10"><i class="fa fa-fw fa-user-o"></i></span>
                   Perfil
                 </a>
@@ -33,7 +33,7 @@
                   <span class="icon is-primary is-small m-r-10"><i class="fa fa-fw fa-bell-o"></i></span>
                   Notificaciones
                 </a>
-                <a class="navbar-item" href="#">
+                <a class="navbar-item" href="{{route('settings')}}">
                   <span class="icon is-primary is-small m-r-10"><i class="fa fa-fw fa-sliders"></i></span>
                   Ajustes
                 </a>

@@ -11,9 +11,16 @@
 		<div class="columns">
 			<div class="column">
 				<a href="{{route('invoices.edit', $invoice->invoice_no)}}" class="button is-primary is-pulled-right">Editar factura</a>
-				<a href="{{route('invoices.pdf.show', $invoice->invoice_no)}}" class="button is-link m-r-10 is-pulled-right">PDF</a>
+				<a href="{{route('invoices.pdf.show', $invoice->invoice_no)}}" class="show-pdf-button button is-link m-r-10 is-pulled-right">PDF</a>
   			<a href="{{route('invoices.index')}}" class="button m-r-10 is-pulled-right">Volver</a>
-				<div class="title">Factura {{$invoice->invoice_no}}</div>
+				<div class="title">
+					Factura {{$invoice->invoice_no}}
+					@if($invoice->payment_date)
+						<span class="tag is-success m-l-10">Pagada {{\Carbon::parse(gmdate("Y-m-d\TH:i:s", strtotime($invoice->payment_date)))->diffForHumans()}}</span>
+					@else
+						<span class="tag is-danger m-l-10">Pendiente</span>
+					@endif
+				</div>
 				<hr>
 			</div>
 		</div>
@@ -27,29 +34,17 @@
 						<tbody>
 							<tr>
 								<th>Nº factura</th>
-								<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{sprintf('%06d', $invoice->invoice_no)}}</td>
+								<td class="invoice-no-fake" data-invoiceno="{{$invoice->invoice_no}}">{{$invoice->invoice_no}}</td>
 							</tr>
 							<tr>
 								<th>Fecha</th>
-								<td class="invoice-date-fake has-no-borders">{{\Carbon\Carbon::parse($invoice->invoice_date)->format('d-m-Y')}}</td>
+								<td class="invoice-date-fake has-no-borders">{{\Carbon::parse($invoice->invoice_date)->format('d-m-Y')}}</td>
 							</tr>
 							<tr>
 								<th>Nombre</th>
 								<td>{{Auth::user()->fullName()}}</td>
 							</tr>
-							{{-- TODO: cambiar datos fijos por user_settings --}}
-							<tr>
-								<th>Domicilio</th>
-								<td>C/ Bélgica 14, puerta 5</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td>46021 Valencia (Valencia)</td>
-							</tr>
-							<tr>
-								<th>CIF / NIF</th>
-								<td>44646557-S</td>
-							</tr>
+							@include('app.invoices.partials.userdata-rows')
 						</tbody>
 					</table>
 				</div>
@@ -79,7 +74,7 @@
 							</tr>
 							<tr>
 								<th>Teléfono / Fax</th>
-								<td>{{$invoice->clinic()->phone}} / {{($invoice->clinic()->fax) ? $invoice->clinic()->fax : ''}}</td>
+								<td>{{$invoice->clinic()->phone}} {{($invoice->clinic()->fax) ? ' / '.$invoice->clinic()->fax : ''}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -106,7 +101,7 @@
 										{{$invoiceLine->description}}
 									</td>
 									<td class="has-input-field w-100">
-										{{$invoiceLine->quantity}}€
+										{{$invoiceLine->quantity}}
 									</td>
 									<td class="has-input-field w-150">
 										{{$invoiceLine->unit_price}}€
@@ -123,15 +118,24 @@
 								<th>Subtotal</th>
 								<td class="invoice-subtotal has-text-right">{{$invoice->sub_total}}€</td>
 							</tr>
+							<tr class="invoice-dentist-percentage-row">
+								<td class="is-empty" colspan="2"></td>
+								<th class="invoice-dentist-percentage-label">
+									<span>Porcentaje odontólogo {{$invoice->dentist_percentage}}%</span>
+								</th>
+								<td class="invoice-dentist-percentage-total has-text-right">
+									<span>{{str_replace(',00', '', number_format(ceil($invoice->sub_total * $invoice->dentist_percentage) / 100, 2, ',', '.'))}}€</span>
+								</td>
+							</tr>
 							<tr>
 								<td class="is-empty" colspan="2"></td>
 								<th>Retención {{$invoice->retention}}%</th>
-								<td class="invoice-retention-total has-text-right">{{$invoice->sub_total - $invoice->total}}€</td>
+								<td class="invoice-retention-total has-text-right">{{str_replace(',00', '', number_format(floor($invoice->sub_total * $invoice->dentist_percentage) / 100 - $invoice->total, 2, ',', '.'))}}€</td>
 							</tr>
 							<tr>
 								<td class="is-empty" colspan="2"></td>
 								<th>Total</th>
-								<td class="invoice-total has-text-right">{{$invoice->total}}€</td>
+								<td class="invoice-total has-text-right">{{str_replace(',00', '', number_format($invoice->total, 2, ',', '.'))}}€</td>
 							</tr>
 						</tfoot>
 					</table>

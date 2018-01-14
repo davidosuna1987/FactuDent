@@ -31,25 +31,13 @@
 							</tr>
 							<tr>
 								<th>Fecha</th>
-								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon\Carbon::parse('today')->format('Y-m-d')}}"></td>
+								<td><input class="input invoice-date-fake is-primary is-small" id="invoice_date_fake" type="date" name="invoice_date_fake" value="{{\Carbon::parse('first day of this month')->format('Y-m-d')}}"></td>
 							</tr>
 							<tr>
 								<th>Nombre</th>
 								<td>{{Auth::user()->fullName()}}</td>
 							</tr>
-							{{-- TODO: cambiar datos fijos por user_settings --}}
-							<tr>
-								<th>Domicilio</th>
-								<td>C/ Bélgica 14, puerta 5</td>
-							</tr>
-							<tr>
-								<th></th>
-								<td>46021 Valencia (Valencia)</td>
-							</tr>
-							<tr>
-								<th>CIF / NIF</th>
-								<td>44646557-S</td>
-							</tr>
+							@include('app.invoices.partials.userdata-rows')
 						</tbody>
 					</table>
 				</div>
@@ -65,7 +53,7 @@
 									  <div class="select is-small">
 									    <select class="invoice-clinic-id-fake is-primary">
 								    	  <option value="0" selected>Selecciona una clínica</option>
-									      @foreach(auth()->user()->clinics() as $clinic)
+									      @foreach(auth()->user()->clinics()->get() as $clinic)
 													<option value="{{$clinic->id}}"
 														data-id="{{$clinic->id}}"
 														data-name="{{$clinic->name}}"
@@ -78,7 +66,7 @@
 														data-post_code="{{$clinic->post_code}}"
 														data-phone="{{$clinic->phone}}"
 														data-fax="{{$clinic->fax}}">
-														{{$clinic->contact}}
+														{{$clinic->name}}
 													</option>
 									      @endforeach
 									    </select>

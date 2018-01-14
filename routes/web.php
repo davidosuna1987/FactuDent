@@ -26,14 +26,18 @@ Route::get('/home', function(){
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 
  		// Route for root active user directory
-		Route::get('/', 'Admin\AdminUserController@index')->name('admin.index');
+		Route::get('/', 'Admin\AdminController@index')->name('admin.index');
 });
 
 // Routes for active clients
 Route::group(['prefix' => 'app', 'middleware' => 'active.user'], function(){
 
 	// Route for root active user directory
-	Route::get('/', 'App\ActiveUserController@index')->name('app.index');
+	Route::get('/', 'App\UserController@index')->name('app.index');
+	Route::get('profile', 'App\UserController@profile')->name('profile');
+	Route::put('profile', 'App\UserController@updateProfile')->name('profile.update');
+	Route::get('settings', 'App\UserController@settings')->name('settings');
+	Route::put('settings', 'App\UserController@updateSettings')->name('settings.update');
 
 	//Clinics routes
 	Route::get('clinics', 'ClinicController@index')->name('clinics.index');
@@ -56,6 +60,7 @@ Route::group(['prefix' => 'app', 'middleware' => 'active.user'], function(){
 
 	//Invoices routes
 	Route::get('invoices', 'InvoiceController@index')->name('invoices.index');
+	Route::get('invoices/pending', 'InvoiceController@pending')->name('invoices.pending');
 	Route::post('invoices', 'InvoiceController@store')->name('invoices.store');
 	Route::get('invoices/create', 'InvoiceController@create')->name('invoices.create');
 	Route::get('invoices/{invoice}', 'InvoiceController@show')->name('invoices.show');
@@ -63,6 +68,8 @@ Route::group(['prefix' => 'app', 'middleware' => 'active.user'], function(){
 	Route::put('invoices/{invoice}', 'InvoiceController@update')->name('invoices.update');
 	Route::delete('invoices/{invoice}', 'InvoiceController@delete')->name('invoices.delete');
 	Route::get('invoices/{invoice}/pdf/show', 'InvoiceController@showPDF')->name('invoices.pdf.show');
+	Route::put('invoices/{invoice_id}/pay', 'InvoiceController@pay')->name('invoices.pay');
+	Route::put('invoices/{invoice_id}/unpay', 'InvoiceController@unpay')->name('invoices.unpay');
 
 });
 

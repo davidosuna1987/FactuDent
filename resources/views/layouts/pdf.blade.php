@@ -14,7 +14,10 @@
 </head>
 <body>
     <div id="app" class="pdf">
-        <img class="pdf-logo" src="{{ asset('images/factudent-logo.png') }}" alt="FactuDent Logo" width="112" height="28">
+        @if(auth()->user()->show_logo)
+            <img class="pdf-logo" src="{{ asset('images/factudent-logo.png') }}" alt="FactuDent Logo" width="112" height="28">
+        @endif
+
         <main class="container">
             <div class="content">
                 @yield('content')

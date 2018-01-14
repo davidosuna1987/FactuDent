@@ -15,7 +15,8 @@ class Invoice extends Model
         'invoice_no',
         'invoice_date',
         'payment_date',
-    	'retention',
+        'retention',
+    	'dentist_percentage',
     	'sub_total',
     	'total',
     ];
@@ -45,5 +46,10 @@ class Invoice extends Model
         $fig = (int) str_pad('1', 3, '0');
         $total =  (ceil($total * $fig) / $fig);
         $this->attributes['total'] = $total;
+    }
+
+    public function setInvoiceNoAttribute($invoice_no)
+    {
+        $this->attributes['invoice_no'] = sprintf('%06d', $invoice_no);
     }
 }

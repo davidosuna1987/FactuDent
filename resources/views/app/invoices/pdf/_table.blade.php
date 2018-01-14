@@ -25,10 +25,17 @@
 			<th>Subtotal</th>
 			<td class="invoice-subtotal has-text-right">{{$invoice->sub_total}}€</td>
 		</tr>
+		<tr class="invoice-dentist-percentage-row">
+			<td class="is-empty" colspan="2"></td>
+			<th class="invoice-dentist-percentage-label">
+				<span>Porcentaje odontólogo {{$invoice->dentist_percentage}}%</span>
+			</th>
+			<td class="has-text-right">{{number_format(ceil($invoice->sub_total * $invoice->dentist_percentage) / 100, 2)}}€</td>
+		</tr>
 		<tr>
 			<td class="is-empty" colspan="2"></td>
 			<th>Retención {{$invoice->retention}}%</th>
-			<td class="invoice-retention-total has-text-right">{{$invoice->sub_total - $invoice->total}}€</td>
+			<td class="invoice-retention-total has-text-right">{{ceil($invoice->sub_total * $invoice->dentist_percentage) / 100 - $invoice->total}}€</td>
 		</tr>
 		<tr>
 			<td class="is-empty" colspan="2"></td>
